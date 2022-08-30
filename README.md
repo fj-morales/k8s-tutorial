@@ -146,13 +146,13 @@ _NOTE: Replace the pod IDs with the ones from your instance, they change every t
 
   5. xrd2
     screen -S xrd2
-    kubectl port-forward --address 0.0.0.0 service/xrd2 1095:1094
+    kubectl port-forward --address 0.0.0.0 service/xrd2 1095:1095
 
     ctrl+a + d
 
   6. xrd3
     screen -S xrd3
-    kubectl port-forward --address 0.0.0.0 service/xrd3 1096:1094
+    kubectl port-forward --address 0.0.0.0 service/xrd3 1096:1096
 
     ctrl+a + d
 ## Connect docker client
