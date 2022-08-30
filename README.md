@@ -121,28 +121,40 @@ _NOTE: Replace the pod IDs with the ones from your instance, they change every t
   Let's use screen command to open new terminals that remain open
 
   1. server-rucio-server
-    screen
+    screen -S rucio-server
     kubectl port-forward --address 0.0.0.0 service/server-rucio-server 8080:80
 
+    ctrl+a + d
+
   2. server-rucio-server-auth
-    screen
+    screen -S rucio-server-auth
     kubectl port-forward --address 0.0.0.0 service/server-rucio-server-auth 18080:80
 
+    ctrl+a + d
+
   3. fts
-    screen
+    screen -S fts
     kubectl port-forward --address 0.0.0.0 service/fts 8446:8446
 
+    ctrl+a + d
+
   4. xrd1
-    screen
+    screen -S xrd1
     kubectl port-forward --address 0.0.0.0 service/xrd1 1094:1094
 
+    ctrl+a + d
+
   5. xrd2
-    screen
+    screen -S xrd2
     kubectl port-forward --address 0.0.0.0 service/xrd2 1095:1094
 
+    ctrl+a + d
+
   6. xrd3
-    screen
+    screen -S xrd3
     kubectl port-forward --address 0.0.0.0 service/xrd3 1096:1094
+
+    ctrl+a + d
 ## Connect docker client
 
 1. Create container
