@@ -96,7 +96,7 @@ spec:
           value: "1094"
       ports:
         - name: xrd2
-          containerPort: 1094
+          containerPort: 1095
           protocol: TCP
       volumeMounts:
         - name: hostcert
@@ -127,8 +127,8 @@ metadata:
     app: xrd2
 spec:
   ports:
-    - port: 1094
-      targetPort: 1094
+    - port: 1095
+      targetPort: 1095
       protocol: TCP
       name: xrd2
 
@@ -151,7 +151,7 @@ spec:
           value: "1094"
       ports:
         - name: xrd3
-          containerPort: 1094
+          containerPort: 1096
           protocol: TCP
       volumeMounts:
         - name: hostcert
@@ -182,8 +182,8 @@ metadata:
     app: xrd3
 spec:
   ports:
-    - port: 1094
-      targetPort: 1094
+    - port: 1096
+      targetPort: 1096
       protocol: TCP
       name: xrd3
 
