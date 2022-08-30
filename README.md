@@ -19,7 +19,7 @@
 
 * Start minikube with extra RAM:
 
-      minikube start --memory='4000mb'
+      minikube start --memory='8000mb' --listen-address=0.0.0.0 --vm-driver=docker
 
 * Add Helm chart repositories:
 
@@ -78,7 +78,7 @@ _NOTE: Replace the pod IDs with the ones from your instance, they change every t
 * Install the Rucio server and wait for it to come online:
 
       helm install server rucio/rucio-server -f server.yaml
-      
+
       kubectl logs -f server-rucio-server-7fffc4665d-ts67v rucio-server
 
 * Prepare a client container for interactive use:
@@ -98,13 +98,13 @@ _NOTE: Replace the pod IDs with the ones from your instance, they change every t
 * Install the FTS database (MySQL) and wait for it to come online.
 
       kubectl apply -f ftsdb.yaml
-      
+
       kubectl logs -f fts-mysql-db7988d96-gn6dw
 
 * Install FTS, once the FTS database container is up and running:
 
       kubectl apply -f fts.yaml
-      
+
       kubectl logs -f fts-server-7cb5d7c789-scg6c
 
 * Install the Rucio daemons:
@@ -114,6 +114,53 @@ _NOTE: Replace the pod IDs with the ones from your instance, they change every t
 * Run FTS storage authentication delegation once:
 
       kubectl create job renew-manual-1 --from=cronjob/daemons-renew-fts-proxy
+
+
+## Forward ports
+
+  Let's use screen command to open new terminals that remain open
+
+  1. server-rucio-server
+    screen
+    kubectl port-forward --address 0.0.0.0 service/server-rucio-server 8080:80
+
+  2. server-rucio-server-auth
+    screen
+    kubectl port-forward --address 0.0.0.0 service/server-rucio-server-auth 18080:80
+
+  3. fts
+    screen
+    kubectl port-forward --address 0.0.0.0 service/fts 8446:8446
+
+  4. xrd1
+    screen
+    kubectl port-forward --address 0.0.0.0 service/xrd1 1094:1094
+
+  5. xrd2
+    screen
+    kubectl port-forward --address 0.0.0.0 service/xrd2 1095:1094
+
+  6. xrd3
+    screen
+    kubectl port-forward --address 0.0.0.0 service/xrd3 1096:1094
+## Connect docker client
+
+  docker run \
+  -e RUCIO_CFG_RUCIO_HOST=http://server-rucio-server:8080 \
+  -e RUCIO_CFG_AUTH_HOST=http://server-rucio-server-auth:18080 \
+  -e RUCIO_CFG_AUTH_TYPE=userpass \
+  -e RUCIO_CFG_USERNAME=<username> \
+  -e RUCIO_CFG_PASSWORD=<password> \
+  -e RUCIO_CFG_ACCOUNT=<account> \
+  --name=<username>-rucio-client \
+  --add-host server-rucio-server:145.38.186.98 \
+  --add-host server-rucio-server-auth:145.38.186.98 \
+  --add-host fts:145.38.186.98 \
+  --add-host xrd1:145.38.186.98 \
+  --add-host xrd2:145.38.186.98 \
+  --add-host xrd3:145.38.186.98 \
+  -it -d rucio/rucio-clients:release-1.29.1
+
 
 ## Rucio usage
 
@@ -130,8 +177,8 @@ _NOTE: Replace the pod IDs with the ones from your instance, they change every t
 * Add the protocol definitions for the storage servers
 
       rucio-admin rse add-protocol --hostname xrd1 --scheme root --prefix //rucio --port 1094 --impl rucio.rse.protocols.gfal.Default --domain-json '{"wan": {"read": 1, "write": 1, "delete": 1, "third_party_copy_read": 1, "third_party_copy_write": 1}, "lan": {"read": 1, "write": 1, "delete": 1}}' XRD1
-      rucio-admin rse add-protocol --hostname xrd2 --scheme root --prefix //rucio --port 1094 --impl rucio.rse.protocols.gfal.Default --domain-json '{"wan": {"read": 1, "write": 1, "delete": 1, "third_party_copy_read": 1, "third_party_copy_write": 1}, "lan": {"read": 1, "write": 1, "delete": 1}}' XRD2
-      rucio-admin rse add-protocol --hostname xrd3 --scheme root --prefix //rucio --port 1094 --impl rucio.rse.protocols.gfal.Default --domain-json '{"wan": {"read": 1, "write": 1, "delete": 1, "third_party_copy_read": 1, "third_party_copy_write": 1}, "lan": {"read": 1, "write": 1, "delete": 1}}' XRD3
+      rucio-admin rse add-protocol --hostname xrd2 --scheme root --prefix //rucio --port 1095 --impl rucio.rse.protocols.gfal.Default --domain-json '{"wan": {"read": 1, "write": 1, "delete": 1, "third_party_copy_read": 1, "third_party_copy_write": 1}, "lan": {"read": 1, "write": 1, "delete": 1}}' XRD2
+      rucio-admin rse add-protocol --hostname xrd3 --scheme root --prefix //rucio --port 1096 --impl rucio.rse.protocols.gfal.Default --domain-json '{"wan": {"read": 1, "write": 1, "delete": 1, "third_party_copy_read": 1, "third_party_copy_write": 1}, "lan": {"read": 1, "write": 1, "delete": 1}}' XRD3
 
 * Enable FTS
 
