@@ -145,6 +145,7 @@ _NOTE: Replace the pod IDs with the ones from your instance, they change every t
     kubectl port-forward --address 0.0.0.0 service/xrd3 1096:1094
 ## Connect docker client
 
+1. Create container
   docker run \
   -e RUCIO_CFG_RUCIO_HOST=http://server-rucio-server:8080 \
   -e RUCIO_CFG_AUTH_HOST=http://server-rucio-server-auth:18080 \
@@ -161,6 +162,10 @@ _NOTE: Replace the pod IDs with the ones from your instance, they change every t
   --add-host xrd3:145.38.186.98 \
   -it -d rucio/rucio-clients:release-1.29.1
 
+
+2. Enter container cli
+
+  docker exec -it -u root <username>-rucio-client /bin/bash
 
 ## Rucio usage
 
