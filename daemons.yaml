@@ -135,7 +135,7 @@ reaper:
   greedy: 1
 
 image:
-  tag: latest
+  tag: release-1.29.1
   pullPolicy: Always
 
 ftsRenewal:
